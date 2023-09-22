@@ -4,7 +4,7 @@ project("first-lab-linear")
 set(CXX_STANDARD C++17)
 
 set(SOURCE
-    src/main.cpp
+    main.cpp
 )
 
 add_executable(app ${SOURCE})
