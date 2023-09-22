@@ -2,6 +2,15 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+#ifdef __linux__
+const auto _escape_command = "clear";
+#else
+const auto _escape_command = "clr";
+#endif
+// !Redefined function for crosscompiling
+void clrscr() { system(_escape_command); }
+
 //// Messages part
 // Message to show in menu
 const auto menu_message = "Welcome to the Music catalogue!\n\n"
@@ -37,15 +46,19 @@ int main() {
   bool is_running = true;
   int option = 0;
   std::vector<Track> tracks;
+  // Initialize connection to the file
+
   while (is_running) {
+
     // Show our message and prompt
     std::cout << menu_message << std::endl;
-    std::cout << menu_prompt;
+    std::cout << menu_prompt << std::endl;
     // Read input from user, untill we got the right one
-    while (option < 1 && option > 4) {
+    while (option < 1 || option > 4) {
       std::cin >> option;
+      std::cout << std::flush;
     }
-
+    clrscr();
     switch (option) {
     case 1: {
       Track new_track;
