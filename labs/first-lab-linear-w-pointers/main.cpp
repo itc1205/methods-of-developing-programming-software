@@ -77,55 +77,56 @@ int main() {
     switch (option) {
     case '1': {
       clrscr();
-      Track new_track;
+      Track *new_track = new Track;
       std::cout << first_option << std::endl;
       // Fill in all fields of the struct
       std::cout << title_prompt << std::endl;
-      std::cin >> new_track.title;
+      std::cin >> new_track->title;
 
       std::cout << artist_prompt << std::endl;
-      std::cin >> new_track.artist_name;
+      std::cin >> new_track->artist_name;
 
       std::cout << release_year_prompt << std::endl;
-      std::cin >> new_track.release_year;
+      std::cin >> new_track->release_year;
 
       std::cout << sold_count_prompt << std::endl;
-      std::cin >> new_track.sold_count;
+      std::cin >> new_track->sold_count;
       // Show the struct
 
       for (const auto &header : table_headers) {
         std::cout << std::left << std::setw(16) << header;
       }
       std::cout << std::endl;
-      std::cout << std::left << std::setw(16) << new_track.title
-                << std::setw(16) << new_track.artist_name << std::setw(16)
-                << new_track.release_year << std::setw(16)
-                << new_track.sold_count << std::endl;
+      std::cout << std::left << std::setw(16) << new_track->title
+                << std::setw(16) << new_track->artist_name << std::setw(16)
+                << new_track->release_year << std::setw(16)
+                << new_track->sold_count << std::endl;
 
       std::cout << "Performing write operation..." << std::endl;
 
       std::ofstream fout(filename, std::ios_base::app);
 
-      fout << std::left << std::setw(16) << new_track.title << std::setw(16)
-           << new_track.artist_name << std::setw(16) << new_track.release_year
-           << std::setw(16) << new_track.sold_count << std::endl;
+      fout << std::left << std::setw(16) << new_track->title << std::setw(16)
+           << new_track->artist_name << std::setw(16) << new_track->release_year
+           << std::setw(16) << new_track->sold_count << std::endl;
       std::cout << "Done!" << std::endl;
       fout.close();
       char _;
       std::cout << "Write any char to continue.." << std::endl;
       std::cin >> _;
 
+      delete new_track;
       break;
     }
     case '2': {
       clrscr();
       std::ifstream fin(filename);
-      std::vector<Track> tracks;
+      std::vector<Track*> tracks;
       std::cout << "Performing read operation..." << std::endl;
       while (true) {
-        Track new_track;
-        fin >> new_track.title >> new_track.artist_name >>
-            new_track.release_year >> new_track.sold_count;
+        Track *new_track = new Track;
+        fin >> new_track->title >> new_track->artist_name >>
+            new_track->release_year >> new_track->sold_count;
         if (fin.eof())
           break;
         tracks.push_back(new_track);
@@ -138,15 +139,20 @@ int main() {
       std::cout << std::endl;
 
       for (auto &track : tracks) {
-        std::cout << std::left << std::setw(16) << track.title << std::setw(16)
-                  << track.artist_name << std::setw(16) << track.release_year
-                  << std::setw(16) << track.sold_count << '\n';
+        std::cout << std::left << std::setw(16) << track->title << std::setw(16)
+                  << track->artist_name << std::setw(16) << track->release_year
+                  << std::setw(16) << track->sold_count << '\n';
       }
       std::cout << std::endl;
 
       char _;
       std::cout << "Write any char to continue.." << std::endl;
       std::cin >> _;
+
+      for (int i = 0; i < tracks.size(); i++) {
+        // Deleting data the pointers pointing to
+        delete tracks[i];
+      }
 
       break;
     }
@@ -163,7 +169,8 @@ int main() {
           break;
         tracks.push_back(new_track);
       }
-      std::cout << "Done reading: " << tracks.size() << " tracks total" << std::endl;
+      std::cout << "Done reading: " << tracks.size() << " tracks total"
+                << std::endl;
 
       char menu_option = '0';
 
@@ -276,7 +283,6 @@ int main() {
       break;
     }
     }
-    // Reset the option
     option = '0';
   }
 }
