@@ -11,7 +11,7 @@ const auto _escape_command = "clear";
 #else
 const auto _escape_command = "clr";
 #endif
-// !WARNING Redefined function for cross-compiling
+// !WARNING Redefined console-clear function for cross-compiling
 void clrscr() { system(_escape_command); }
 
 const auto filename = "music_database.dat";
@@ -37,6 +37,15 @@ const auto title_prompt = "Set the title name: ";
 const auto artist_prompt = "Set the artist name: ";
 const auto release_year_prompt = "Set the release year: ";
 const auto sold_count_prompt = "Set the sold count: ";
+
+// Third option message
+const auto fourth_option =
+    "Search prompt!\n\n"
+    "Choose what attribute by you want to perform search:\n\n"
+    "1.Title - Look for the title\n\n"
+    "2.Artist - Look for artist\n\n"
+    "3.Year - Look for year\n\n"
+    "4.Listens - Look for listens";
 
 // Fourth option message
 const auto exit_message = "Closing the program!";
@@ -142,6 +151,7 @@ int main() {
       break;
     }
     case '3': {
+      clrscr();
       std::ifstream fin(filename);
       std::vector<Track> tracks;
       std::cout << "Performing read operation..." << std::endl;
@@ -153,14 +163,115 @@ int main() {
           break;
         tracks.push_back(new_track);
       }
-      std::cout << "Done reading: " << tracks.size() << " tracks" << std::endl;
+      std::cout << "Done reading: " << tracks.size() << " tracks total" << std::endl;
 
-      char menu_option;
-      std::cout << "" << std::endl;
+      char menu_option = '0';
 
+      while (menu_option < '1' || menu_option > '4') {
+        std::cout << fourth_option << std::endl;
+        std::cout << menu_prompt << std::flush;
+        std::cin >> menu_option;
+        clrscr();
+      }
+
+      // Pre-reserve vector of tracks
+      std::vector<Track> matching_tracks;
+      matching_tracks.reserve(tracks.size());
+
+      switch (menu_option) {
+      case '1': {
+        std::string title_to_search;
+
+        std::cout << "Please, enter the title of track: " << std::flush;
+        std::cin >> title_to_search;
+        std::cout << "Searching..." << std::endl;
+
+        for (auto &track : tracks) {
+          if (track.title == title_to_search) {
+            matching_tracks.push_back(track);
+          }
+        }
+        break;
+      }
+      case '2': {
+        std::string artist_to_search;
+
+        std::cout << "Please, enter the artist of track: " << std::flush;
+        std::cin >> artist_to_search;
+        std::cout << "Searching..." << std::endl;
+
+        for (auto &track : tracks) {
+          if (track.title == artist_to_search) {
+            matching_tracks.push_back(track);
+          }
+        }
+        break;
+      }
+      case '3': {
+        int year_from;
+        int year_to;
+        std::cout << "Please, enter the first range of the year to search: "
+                  << std::flush;
+        std::cin >> year_from;
+        std::cout << "Please, enter the last range of the year to search: "
+                  << std::flush;
+        std::cin >> year_to;
+        std::cout << "Searching..." << std::endl;
+
+        for (auto &track : tracks) {
+          if (track.release_year >= year_from &&
+              track.release_year <= year_to) {
+            matching_tracks.push_back(track);
+          }
+        }
+
+        break;
+      }
+      case '4': {
+        int sold_from;
+        int sold_to;
+        std::cout
+            << "Please, enter the first range of the sold count to search: "
+            << std::flush;
+        std::cin >> sold_from;
+        std::cout
+            << "Please, enter the last range of the sold count to search: "
+            << std::flush;
+        std::cin >> sold_to;
+        std::cout << "Searching..." << std::endl;
+
+        for (auto &track : tracks) {
+          if (track.sold_count >= sold_from && track.sold_count <= sold_to) {
+            matching_tracks.push_back(track);
+          }
+        }
+
+        break;
+      }
+      }
+
+      // Output everything that we have found
+
+      std::cout << "Found tracks: " << matching_tracks.size() << std::endl;
+
+      for (const auto &header : table_headers) {
+        std::cout << std::left << std::setw(16) << header;
+      }
+      std::cout << std::endl;
+
+      for (auto &track : matching_tracks) {
+        std::cout << std::left << std::setw(16) << track.title << std::setw(16)
+                  << track.artist_name << std::setw(16) << track.release_year
+                  << std::setw(16) << track.sold_count << '\n';
+      }
+      char _;
+      std::cout << "Write any char to continue.." << std::endl;
+      std::cin >> _;
       break;
     }
     case '4': {
+      // Show message and gracefully shut down the program
+      std::cout << fourth_option << std::endl;
       is_running = false;
       break;
     }
