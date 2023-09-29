@@ -14,4 +14,5 @@ public:
   char artist[SIZEOFCHARFIELD];
   int year;
   int sold_count;
+  int listens_count;
 };

@@ -7,11 +7,31 @@
 #include "modules/tui.hpp"
 
 int main() {
-  Repository repo = Repository(constants::database_uri);
-  MusicRecord *record = MusicRecord::from_string("AwA Hewwo 2003 1205");
-  repo.create_record(record);
-  for (auto &record : repo.get_all_records()) {
-    std::cout << record->to_string() << '\n';
+  auto repo = Repository(constants::database_uri);
+
+  bool is_running = true;
+  while (is_running) {
+    TUI::clrscr();
+    auto choice = TUI::show_menu_prompt();
+    switch (choice) {
+    case '1': {
+      TUI::first_menu(repo);
+      break;
+    }
+    case '2': {
+      TUI::second_menu(repo);
+      break;
+    }
+    case '3': {
+      TUI::third_menu(repo);
+      break;
+    }
+    case '4': {
+      TUI::fourth_menu();
+      is_running = false;
+      break;
+    }
+    }
+    TUI::show_prompt();
   }
-  std::cout << std::endl;
 }

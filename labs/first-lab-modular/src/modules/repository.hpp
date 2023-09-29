@@ -9,19 +9,15 @@
 // pointing to the freed memory!!!
 class Repository {
 public:
-  // Can return nullptr if wont find any
   std::vector<MusicRecord *> find_by_title(std::string title);
-  // Can return nullptr if wont find any
   std::vector<MusicRecord *> find_by_artist(std::string artist);
-  // Can return nullptr if wont find any
-  std::vector<MusicRecord *> find_by_year(int begin_year, int end_year);
-  // Can return nullptr if wont find any
-  std::vector<MusicRecord *> find_by_sold_count(int begin_listens, int end_listens);
-
+  std::vector<MusicRecord *> find_by_year(int begin, int end);
+  std::vector<MusicRecord *> find_by_sold_count(int begin, int end);
+  std::vector<MusicRecord *> find_by_listens_count(int begin, int end);
   // Can return nullptr if wont find any
   MusicRecord *find_by_record_index(int index);
 
-  // Returns pointer to the vec of pointers
+  // Returns vec of pointers
   std::vector<MusicRecord *> get_all_records();
 
   // Will take ownership of pointer

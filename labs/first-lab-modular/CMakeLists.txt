@@ -8,6 +8,7 @@ set(SOURCE
     src/modules/database.cpp
     src/modules/repository.cpp
     src/modules/music_record.cpp
+    src/modules/tui.cpp
 )
 
 add_executable(app ${SOURCE})
