@@ -6,7 +6,7 @@
 class MusicRecord {
 public:
   // Will format MusicRecord from string
-  static MusicRecord* from_string(std::string str);
+  static MusicRecord *from_string(std::string str);
   // Will format string from MusicRecord
   std::string to_string();
 

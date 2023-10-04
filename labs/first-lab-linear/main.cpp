@@ -9,7 +9,7 @@
 #ifdef __linux__
 const auto _escape_command = "clear";
 #else
-const auto _escape_command = "clr";
+const auto _escape_command = "cls";
 #endif
 // !WARNING Redefined console-clear function for cross-compiling
 void clrscr() { system(_escape_command); }
@@ -103,6 +103,7 @@ int main() {
       std::cout << std::left << std::setw(16) << new_track.title
                 << std::setw(16) << new_track.artist_name << std::setw(16)
                 << new_track.release_year << std::setw(16)
+                << new_track.listen_count << std::setw(16)
                 << new_track.sold_count << std::endl;
 
       std::cout << "Performing write operation..." << std::endl;
@@ -111,7 +112,9 @@ int main() {
 
       fout << std::left << std::setw(16) << new_track.title << std::setw(16)
            << new_track.artist_name << std::setw(16) << new_track.release_year
-           << std::setw(16) << new_track.sold_count << std::endl;
+           << std::setw(16) << new_track.sold_count << std::setw(16)
+           << new_track.listen_count << std::endl;
+
       std::cout << "Done!" << std::endl;
       fout.close();
       break;
@@ -123,7 +126,7 @@ int main() {
       while (true) {
         Track new_track;
         fin >> new_track.title >> new_track.artist_name >>
-            new_track.release_year >> new_track.sold_count;
+            new_track.release_year >> new_track.sold_count >> new_track.listen_count;
         if (fin.eof())
           break;
         tracks.push_back(new_track);
@@ -165,7 +168,7 @@ int main() {
 
       char menu_option = '0';
 
-      while (menu_option < '1' || menu_option > '4') {
+      while (menu_option < '1' || menu_option > '5') {
         std::cout << fourth_option << std::endl;
         std::cout << menu_prompt << std::flush;
         std::cin >> menu_option;
@@ -244,6 +247,27 @@ int main() {
           }
         }
 
+        break;
+      }
+      case '5': {
+        int listens_from;
+        int listens_to;
+        std::cout
+            << "Please, enter the first range of the listens count to search: "
+            << std::flush;
+        std::cin >> listens_from;
+        std::cout
+            << "Please, enter the last range of the listens count to search: "
+            << std::flush;
+        std::cin >> listens_to;
+        std::cout << "Searching..." << std::endl;
+
+        for (auto &track : tracks) {
+          if (track.listen_count >= listens_from &&
+              track.listen_count <= listens_to) {
+            matching_tracks.push_back(track);
+          }
+        }
         break;
       }
       }

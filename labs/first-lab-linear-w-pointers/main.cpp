@@ -9,7 +9,7 @@
 #ifdef __linux__
 const auto _escape_command = "clear";
 #else
-const auto _escape_command = "clr";
+const auto _escape_command = "cls";
 #endif
 // !WARNING Redefined console-clear function for cross-compiling
 void clrscr() { system(_escape_command); }
@@ -37,7 +37,7 @@ const auto title_prompt = "Set the title name: ";
 const auto artist_prompt = "Set the artist name: ";
 const auto release_year_prompt = "Set the release year: ";
 const auto sold_count_prompt = "Set the sold count: ";
-
+const auto listen_count_prompt = "Set the listen count: ";
 // Third option message
 const auto fourth_option =
     "Search prompt!\n\n"
@@ -56,6 +56,7 @@ struct Track {
   char artist_name[16];
   unsigned int release_year;
   unsigned int sold_count;
+  unsigned int listen_count;
 };
 
 //// Program part
@@ -76,8 +77,7 @@ int main() {
     }
     switch (option) {
     case '1': {
-      clrscr();
-      Track *new_track = new Track;
+      Track* new_track = new Track;
       std::cout << first_option << std::endl;
       // Fill in all fields of the struct
       std::cout << title_prompt << std::endl;
@@ -93,6 +93,9 @@ int main() {
       std::cin >> new_track->sold_count;
       // Show the struct
 
+      std::cout << listen_count_prompt << std::endl;
+      std::cin >> new_track->listen_count;
+
       for (const auto &header : table_headers) {
         std::cout << std::left << std::setw(16) << header;
       }
@@ -100,6 +103,7 @@ int main() {
       std::cout << std::left << std::setw(16) << new_track->title
                 << std::setw(16) << new_track->artist_name << std::setw(16)
                 << new_track->release_year << std::setw(16)
+                << new_track->listen_count << std::setw(16)
                 << new_track->sold_count << std::endl;
 
       std::cout << "Performing write operation..." << std::endl;
@@ -108,25 +112,22 @@ int main() {
 
       fout << std::left << std::setw(16) << new_track->title << std::setw(16)
            << new_track->artist_name << std::setw(16) << new_track->release_year
-           << std::setw(16) << new_track->sold_count << std::endl;
-      std::cout << "Done!" << std::endl;
-      fout.close();
-      char _;
-      std::cout << "Write any char to continue.." << std::endl;
-      std::cin >> _;
+           << std::setw(16) << new_track->sold_count << std::setw(16)
+           << new_track->listen_count << std::endl;
 
+      std::cout << "Done!" << std::endl;
       delete new_track;
+      fout.close();
       break;
     }
     case '2': {
-      clrscr();
       std::ifstream fin(filename);
       std::vector<Track*> tracks;
       std::cout << "Performing read operation..." << std::endl;
       while (true) {
-        Track *new_track = new Track;
+        Track* new_track = new Track;
         fin >> new_track->title >> new_track->artist_name >>
-            new_track->release_year >> new_track->sold_count;
+            new_track->release_year >> new_track->sold_count >> new_track->listen_count;
         if (fin.eof())
           break;
         tracks.push_back(new_track);
@@ -145,19 +146,18 @@ int main() {
       }
       std::cout << std::endl;
 
+      // Cleanup memory
+      for (auto &track : tracks) {
+        delete track;
+      }
+      tracks.clear();
       char _;
       std::cout << "Write any char to continue.." << std::endl;
       std::cin >> _;
 
-      for (int i = 0; i < tracks.size(); i++) {
-        // Deleting data the pointers pointing to
-        delete tracks[i];
-      }
-
       break;
     }
     case '3': {
-      clrscr();
       std::ifstream fin(filename);
       std::vector<Track> tracks;
       std::cout << "Performing read operation..." << std::endl;
@@ -174,7 +174,7 @@ int main() {
 
       char menu_option = '0';
 
-      while (menu_option < '1' || menu_option > '4') {
+      while (menu_option < '1' || menu_option > '5') {
         std::cout << fourth_option << std::endl;
         std::cout << menu_prompt << std::flush;
         std::cin >> menu_option;
@@ -255,6 +255,27 @@ int main() {
 
         break;
       }
+      case '5': {
+        int listens_from;
+        int listens_to;
+        std::cout
+            << "Please, enter the first range of the listens count to search: "
+            << std::flush;
+        std::cin >> listens_from;
+        std::cout
+            << "Please, enter the last range of the listens count to search: "
+            << std::flush;
+        std::cin >> listens_to;
+        std::cout << "Searching..." << std::endl;
+
+        for (auto &track : tracks) {
+          if (track.listen_count >= listens_from &&
+              track.listen_count <= listens_to) {
+            matching_tracks.push_back(track);
+          }
+        }
+        break;
+      }
       }
 
       // Output everything that we have found
@@ -283,6 +304,12 @@ int main() {
       break;
     }
     }
+    char _;
+    std::cout << "Write any char to continue.." << std::endl;
+    std::cin >> _;
+
+    // Reset the option
     option = '0';
+    clrscr();
   }
 }

@@ -22,7 +22,7 @@ void second_menu(Repository &repo);
 void third_menu(Repository &repo);
 void fourth_menu();
 
-void display_table(std::vector<MusicRecord*> records);
+void display_table(std::vector<MusicRecord *> records);
 
 void show_prompt();
 } // namespace TUI
@@ -39,7 +39,8 @@ const auto menu_message = "Welcome to the Music catalogue!\n\n"
 const auto menu_prompt = "Choose your option~: ";
 
 // Table headers (tabbed out)
-const auto table_headers = {"Title", "Artist", "Release year", "Sold count", "Listens count"};
+const auto table_headers = {"Title", "Artist", "Release year", "Sold count",
+                            "Listens count"};
 // First option message
 const auto first_option = "You choosed inserting new record\n\n"
                           "To continue you must answer all prompts";
