@@ -70,7 +70,7 @@ void TUI::third_menu(Repository &repo) {
 
   char menu_option = '0';
 
-  while (menu_option < '1' || menu_option > '4') {
+  while (menu_option < '1' || menu_option > '5') {
     std::cout << TUI_MESSAGES::fourth_option << std::endl;
     std::cout << TUI_MESSAGES::menu_prompt << std::flush;
     std::cin >> menu_option;
@@ -129,8 +129,9 @@ void TUI::third_menu(Repository &repo) {
   case '5': {
     int listens_from;
     int listens_to;
-    std::cout << "Please, enter the first range of the listens count to search: "
-              << std::flush;
+    std::cout
+        << "Please, enter the first range of the listens count to search: "
+        << std::flush;
     std::cin >> listens_from;
     std::cout << "Please, enter the last range of the listens count to search: "
               << std::flush;

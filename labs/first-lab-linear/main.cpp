@@ -37,7 +37,7 @@ const auto title_prompt = "Set the title name: ";
 const auto artist_prompt = "Set the artist name: ";
 const auto release_year_prompt = "Set the release year: ";
 const auto sold_count_prompt = "Set the sold count: ";
-
+const auto listen_count_prompt = "Set the listen count: ";
 // Third option message
 const auto fourth_option =
     "Search prompt!\n\n"
@@ -56,6 +56,7 @@ struct Track {
   char artist_name[16];
   unsigned int release_year;
   unsigned int sold_count;
+  unsigned int listen_count;
 };
 
 //// Program part
@@ -76,7 +77,6 @@ int main() {
     }
     switch (option) {
     case '1': {
-      clrscr();
       Track new_track;
       std::cout << first_option << std::endl;
       // Fill in all fields of the struct
@@ -92,6 +92,9 @@ int main() {
       std::cout << sold_count_prompt << std::endl;
       std::cin >> new_track.sold_count;
       // Show the struct
+
+      std::cout << listen_count_prompt << std::endl;
+      std::cin >> new_track.listen_count;
 
       for (const auto &header : table_headers) {
         std::cout << std::left << std::setw(16) << header;
@@ -111,14 +114,9 @@ int main() {
            << std::setw(16) << new_track.sold_count << std::endl;
       std::cout << "Done!" << std::endl;
       fout.close();
-      char _;
-      std::cout << "Write any char to continue.." << std::endl;
-      std::cin >> _;
-
       break;
     }
     case '2': {
-      clrscr();
       std::ifstream fin(filename);
       std::vector<Track> tracks;
       std::cout << "Performing read operation..." << std::endl;
@@ -151,7 +149,6 @@ int main() {
       break;
     }
     case '3': {
-      clrscr();
       std::ifstream fin(filename);
       std::vector<Track> tracks;
       std::cout << "Performing read operation..." << std::endl;
@@ -163,7 +160,8 @@ int main() {
           break;
         tracks.push_back(new_track);
       }
-      std::cout << "Done reading: " << tracks.size() << " tracks total" << std::endl;
+      std::cout << "Done reading: " << tracks.size() << " tracks total"
+                << std::endl;
 
       char menu_option = '0';
 
@@ -276,7 +274,12 @@ int main() {
       break;
     }
     }
+    char _;
+    std::cout << "Write any char to continue.." << std::endl;
+    std::cin >> _;
+
     // Reset the option
     option = '0';
+    clrscr();
   }
 }
