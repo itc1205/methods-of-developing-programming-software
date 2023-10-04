@@ -8,7 +8,7 @@ namespace TUI {
 #ifdef __linux__
 const auto _escape_command = "clear";
 #else
-const auto _escape_command = "clr";
+const auto _escape_command = "cls";
 #endif
 
 void clrscr();
